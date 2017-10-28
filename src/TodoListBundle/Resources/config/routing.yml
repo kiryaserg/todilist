@@ -1,0 +1,5 @@
+todo_list_homepage:
+    path:     /
+    defaults: { _controller: TodoListBundle:Default:index }
+api_login_check:
+    path: /api/login_check
