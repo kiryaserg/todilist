@@ -1,0 +1,16 @@
+TodoListBundle\Entity\Todo:
+    type: entity
+    table: todo
+    repositoryClass: TodoListBundle\Repository\TodoRepository
+    id:
+         id:
+             type: guid
+             generator: { strategy: UUID }
+    fields:
+        name:
+            type: string
+            length: 100
+        isRead:
+            type: boolean
+        createdAt:
+            type: datetime

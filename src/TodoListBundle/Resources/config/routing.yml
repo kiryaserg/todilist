@@ -3,3 +3,23 @@ todo_list_homepage:
     defaults: { _controller: TodoListBundle:Default:index }
 api_login_check:
     path: /api/login_check
+one_task:
+    path: /api/task/{id}
+    defaults: { _controller: TodoListBundle:Default:one }
+    methods:  [GET, HEAD]
+edit_task: 
+    path: /api/task/{id}
+    defaults: { _controller: TodoListBundle:Default:edit }
+    methods:  [PUT]
+delete_task: 
+    path: /api/task/{id}
+    defaults: { _controller: TodoListBundle:Default:delete }
+    methods:  [DELETE]
+all_tasks:
+    path: /api/task
+    defaults: { _controller: TodoListBundle:Default:new }
+    methods:  [GET, HEAD]
+new_task: 
+    path: /api/task
+    defaults: { _controller: TodoListBundle:Default:new }
+    methods:  [POST]
