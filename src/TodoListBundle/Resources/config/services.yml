@@ -1,8 +1,11 @@
 services:
-#    todo_list.todo_repository:
-#        factory
-#        class: TodoListBundle\Repository\TodoRepository
-#        factory-service: doctrine.orm.entity_manager
-#        factory-method: getRepository
-#        arguments:
-#            - TodoListBundle\Entity\Todo
+    todo_list.todo_repository:
+        class: TodoListBundle\Repository\TodoRepository
+        factory: ["@doctrine.orm.entity_manager", getRepository]
+        arguments:
+            - TodoListBundle\Entity\Todo
+    todo_list.task_editor:
+        class: TodoListBundle\Task\TaskEditor
+        arguments: 
+            - '@todo_list.todo_repository'
+            - '@doctrine.orm.entity_manager'

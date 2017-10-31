@@ -1,6 +1,6 @@
 TodoListBundle\Entity\Todo:
     type: entity
-    table: todo
+    table: task
     repositoryClass: TodoListBundle\Repository\TodoRepository
     id:
          id:

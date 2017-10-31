@@ -6,7 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
-use TodoListBundle\Entity\Todo;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class DefaultController extends Controller
 {
@@ -20,9 +20,7 @@ class DefaultController extends Controller
      */
     public function allAction()
     {
-        $repository = $this->getDoctrine()
-                ->getManager()
-                ->getRepository(Todo::class);
+        $repository = $this->get('todo_list.todo_repository');
         
         return new JsonResponse($repository->findAll());
     }
@@ -33,11 +31,13 @@ class DefaultController extends Controller
      */
     public function oneAction($id)
     {
-        $repository = $this->getDoctrine()
-                ->getManager()
-                ->getRepository(Todo::class);
+        $task = $this->get('todo_list.todo_repository')->find($id);
         
-        return new JsonResponse($repository->find($id));
+        if(!$task){
+            return new JsonResponse(null, Response::HTTP_NOT_FOUND);
+        }
+        
+        return new JsonResponse($task);
     }
     
     /**
@@ -49,13 +49,7 @@ class DefaultController extends Controller
             return new JsonResponse('Parameter \'name\' is required', Response::HTTP_NOT_ACCEPTABLE);
         }
        
-        $name = $request->get('name');
-        $todo = new Todo();
-        $todo->setName($name);
-
-        $entityManager = $this->getDoctrine()->getManager(); 
-        $entityManager->persist($todo);
-        $entityManager->flush();
+        $todo = $this->get('todo_list.task_editor')->createNewTask($request->request->all());
          
         return new Response(null, Response::HTTP_ACCEPTED, ['Location'=>$this->generateUrl('one_task',['id'=>$todo->getId()])] ); 
     }
@@ -65,10 +59,7 @@ class DefaultController extends Controller
      */
     public function deleteAction($id)
     {
-        $this->getDoctrine()
-              ->getManager()
-              ->getRepository(Todo::class)
-              ->delete($id);
+        $this->get('todo_list.task_editor')->deleteTask($id);
         
         return new JsonResponse(null, Response::HTTP_NO_CONTENT);
     }
@@ -81,27 +72,12 @@ class DefaultController extends Controller
      */
     public function editAction($id, Request $request)
     {
-        $entityManager = $this->getDoctrine()->getManager();
-        $repository = $entityManager ->getRepository(Todo::class);
-        
-        /**
-         * @var Todo
-         */
-        $todo = $repository->find($id);
-        
-        if(!$todo){
-            return new JsonResponse('Item not found', Response::HTTP_NOT_FOUND);
+        try{
+            $this->get('todo_list.task_editor')->editTask($id, $request->request->all());
         }
-        
-        if($request->request->has('name')){
-            $todo->setName($request->get('name'));
+        catch(NotFoundHttpException $e){
+            return new JsonResponse($e->getMessage(), Response::HTTP_NOT_FOUND);
         }
-        
-        if($request->request->has('isread')){
-            $todo->setIsRead((bool) $request->get('isread'));
-        }
-        
-        $entityManager->flush();
         
         return new JsonResponse(null, Response::HTTP_NO_CONTENT);
     }
