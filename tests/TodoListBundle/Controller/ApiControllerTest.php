@@ -4,7 +4,7 @@ namespace TodoListBundle\Tests\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
-class DefaultControllerTest extends WebTestCase
+class ApiControllerTest extends WebTestCase
 {
     
     const PATH = '/api/task';

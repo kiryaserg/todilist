@@ -8,11 +8,11 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-class DefaultController extends Controller
+class ApiController extends Controller
 {
     public function indexAction()
     {
-        return $this->render('TodoListBundle:Default:index.html.twig');
+        return $this->render('TodoListBundle:Default:index.html.twig', ['tasks' => json_encode($this->get('todo_list.todo_repository')->findAll(), JSON_PRETTY_PRINT) ]);
     }
     /**
      * 
