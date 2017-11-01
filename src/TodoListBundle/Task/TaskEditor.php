@@ -46,9 +46,8 @@ class TaskEditor {
      * @return Todo
      */
     public function createNewTask($taskData) {
-        $name = $taskData['name'];
         $todo = new Todo();
-        $todo->setName($name);
+        $todo->setName($taskData['name']);
 
         $this->entityManager->persist($todo);
         $this->entityManager->flush();
